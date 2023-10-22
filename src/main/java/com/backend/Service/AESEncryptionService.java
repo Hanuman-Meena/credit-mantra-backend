@@ -7,6 +7,8 @@ import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,37 +17,65 @@ public class AESEncryptionService {
 	
 	private static final String AES_Algorithm = "AES";
 	
+	private static final Logger logger = LoggerFactory.getLogger(AESEncryptionService.class);
+	
 	@Value("${aes.encryption_key}")
 	private String encryption_key;
 	
 	
-	public String encrypt(String plainText) throws Exception
+	public String encrypt(String plainText)
 	{
-		Key encryption_key = new SecretKeySpec(this.encryption_key.getBytes(StandardCharsets.UTF_8),AES_Algorithm);
+		logger.info("Inside encrypt method of AESEncryptionService");
 		
-		Cipher cipher = Cipher.getInstance(AES_Algorithm);
-		
-		cipher.init(cipher.ENCRYPT_MODE, encryption_key);
-		
-		byte[] encryptedBytes = cipher.doFinal(plainText.getBytes());
-		
-		return Base64.getEncoder().encodeToString(encryptedBytes);
+		try {
+			Key encryption_key = new SecretKeySpec(this.encryption_key.getBytes(StandardCharsets.UTF_8),AES_Algorithm);
+			
+			Cipher cipher = Cipher.getInstance(AES_Algorithm);
+			
+			cipher.init(cipher.ENCRYPT_MODE, encryption_key);
+			
+			byte[] encryptedBytes = cipher.doFinal(plainText.getBytes());
+			
+			logger.info("encryptedBytes from encrypt method : "+ encryptedBytes);
+			
+			return Base64.getEncoder().encodeToString(encryptedBytes);
+		} catch (Exception e) {
+            
+			logger.error("Error in encrypt method", e.getMessage());
+			
+			return "An error occured!!";
+  
+		}
 	}
 	
 	
-	public String decrypt(String encryptedText) throws Exception
+	public String decrypt(String encryptedText)
 	{
-		Key encryption_key = new SecretKeySpec(this.encryption_key.getBytes(StandardCharsets.UTF_8), AES_Algorithm);
+		logger.info("Inside decrypt method of AESEncryptionService");
 		
-		Cipher cipher = Cipher.getInstance(AES_Algorithm);
-		
-		cipher.init(cipher.DECRYPT_MODE, encryption_key);
-		
-		byte[] encryptedBytes = Base64.getDecoder().decode(encryptedText);
-		
-		byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
-		
-		return new String(decryptedBytes);
+		try {
+			Key encryption_key = new SecretKeySpec(this.encryption_key.getBytes(StandardCharsets.UTF_8), AES_Algorithm);
+			
+			Cipher cipher = Cipher.getInstance(AES_Algorithm);
+			
+			cipher.init(cipher.DECRYPT_MODE, encryption_key);
+			
+			byte[] encryptedBytes = Base64.getDecoder().decode(encryptedText);
+			
+			byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+			
+			logger.info("encyptedByted from decrypt method : "+ encryptedBytes);
+			logger.info("decyptedByted from decrypt method : "+ decryptedBytes);
+						
+			return new String(decryptedBytes);
+			
+		} catch (Exception e) {
+			
+			logger.error("Exception in decrypt method of AESEncryptionService  : ", e.getMessage());
+			
+			return "An error occured!!";
+			
+		}
 	}
 
 }

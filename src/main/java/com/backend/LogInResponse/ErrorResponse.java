@@ -1,4 +1,4 @@
-package com.backend.request;
+package com.backend.LogInResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserLogInRequest {
+public class ErrorResponse {
 	
-	private String phoneNumber;
-    private String password;
+	private String message;
 
 }

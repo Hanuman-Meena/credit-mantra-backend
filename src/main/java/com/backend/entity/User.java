@@ -1,12 +1,13 @@
 package com.backend.entity;
 
-import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
-@Component
+@AllArgsConstructor
 public class User {
 	
     @Id
@@ -25,5 +26,8 @@ public class User {
     private String phoneNumber;
     private String password;
     private String role;
+    private int failedLoginAttempts;
+    private LocalDateTime lastFailedLoginAttempt;
+    private Boolean isActive;
     
 }
